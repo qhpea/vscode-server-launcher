@@ -1,0 +1,40 @@
+# This is a basic workflow to help you get started with Actions
+
+name: CI
+
+# Controls when the workflow will run
+on:
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+
+  # This workflow contains a single job called "build"
+  download:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        arch: ['x86_64', 'aarch64' ] # arm64 is casted
+        target: ['unknown-linux-gnu', 'apple-darwin-signed', 'unknown-linux-musl' ]
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v3
+
+      # Runs a single command using the runners shell
+      - name: Run a one-line script
+        run: curl -sSL https://aka.ms/vscode-server-launcher/${matrix.arch}-${matrix.target} -o vscode-server-launche
+        
+      - name: chmod
+        run: chmod +x vscode-server-launche
+
+      - uses: web3-storage/add-to-web3@v2
+        id: web3
+        with:
+          web3_token: ${{ secrets.WEB3_STORAGE_TOKEN }}
+          path_to_add: 'vscode-server-launche'
+
+      - run: echo ${{ steps.web3.outputs.cid }}
+      - run: echo ${{ steps.web3.outputs.url }}
