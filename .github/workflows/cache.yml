@@ -25,16 +25,16 @@ jobs:
 
       # Runs a single command using the runners shell
       - name: Run a one-line script
-        run: curl -sSL https://aka.ms/vscode-server-launcher/${matrix.arch}-${matrix.target} -o vscode-server-launche
+        run: curl -sSL https://aka.ms/vscode-server-launcher/${matrix.arch}-${matrix.target} -o vscode-server-launcher
         
       - name: chmod
-        run: chmod +x vscode-server-launche
+        run: chmod +x vscode-server-launcher
 
       - uses: web3-storage/add-to-web3@v2
         id: web3
         with:
           web3_token: ${{ secrets.WEB3_STORAGE_TOKEN }}
-          path_to_add: 'vscode-server-launche'
+          path_to_add: 'vscode-server-launcher'
 
       - run: echo ${{ steps.web3.outputs.cid }}
       - run: echo ${{ steps.web3.outputs.url }}
