@@ -25,7 +25,7 @@ jobs:
 
       # Runs a single command using the runners shell
       - name: Run a one-line script
-        run: curl -sSL https://aka.ms/vscode-server-launcher/${matrix.arch}-${matrix.target} -o vscode-server-launcher
+        run: curl -sSL https://aka.ms/vscode-server-launcher/${{matrix.arch}}-${{matrix.target}} -o vscode-server-launcher
         
       - name: chmod
         run: chmod +x vscode-server-launcher
