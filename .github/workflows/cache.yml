@@ -9,15 +9,13 @@ on:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-
+  outputs:
+      cid: ${{ steps.web3.outputs.cid }}
+      url: ${{ steps.web3.outputs.url }}
   # This workflow contains a single job called "build"
-  download:
+  cache:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        arch: ['x86_64', 'aarch64' ] # arm64 is casted
-        target: ['unknown-linux-gnu', 'apple-darwin-signed', 'unknown-linux-musl' ]
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
@@ -25,16 +23,21 @@ jobs:
 
       # Runs a single command using the runners shell
       - name: Run a one-line script
-        run: curl -sSL https://aka.ms/vscode-server-launcher/${{matrix.arch}}-${{matrix.target}} -o vscode-server-launcher
-        
-      - name: chmod
-        run: chmod +x vscode-server-launcher
+        run: |
+        OUT_DIR="./out/vscode-server-launcher"
+        mkdir -p "$OUT_DIR"
+
+        for arch in aarch64 x86_64; do
+          for target in unknown-linux-gnu unknown-linux-musl apple-darwin-signed; do
+            url=https://aka.ms/vscode-server-launcher/$arch-$target
+            out_file=$OUT_DIR/$arch-$target
+            curl -sSL "$url" -o "$out_file"
+            chmod +x "$out_file"
+          done
+        done
 
       - uses: web3-storage/add-to-web3@v2
         id: web3
         with:
           web3_token: ${{ secrets.WEB3_STORAGE_TOKEN }}
-          path_to_add: 'vscode-server-launcher'
-
-      - run: echo ${{ steps.web3.outputs.cid }}
-      - run: echo ${{ steps.web3.outputs.url }}
+          path_to_add: './out'
