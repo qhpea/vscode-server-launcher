@@ -12,6 +12,8 @@ jobs:
   # This workflow contains a single job called "build"
   cache:
     outputs:
+      changes: ${{ steps.auto-commit-action.outputs.changes_detected }}
+      version: ${{ steps.download.outputs.version }}
       cid: ${{ steps.web3.outputs.cid }}
       url: ${{ steps.web3.outputs.url }}
     # The type of runner that the job will run on
@@ -20,24 +22,19 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3
-
-      # Runs a single command using the runners shell
-      - name: Run a one-line script
-        run: |
-          OUT_DIR="./out/vscode-server-launcher"
-          mkdir -p "$OUT_DIR"
-
-          for arch in aarch64 x86_64; do
-            for target in unknown-linux-gnu unknown-linux-musl apple-darwin-signed; do
-              url=https://aka.ms/vscode-server-launcher/$arch-$target
-              out_file=$OUT_DIR/$arch-$target
-              curl -sSL "$url" -o "$out_file"
-              chmod +x "$out_file"
-            done
-          done
-
-      - uses: web3-storage/add-to-web3@v2
+      - id: download
+        run: ./download.sh
+        shell: bash
+      - id: auto-commit-action
+        uses: stefanzweifel/git-auto-commit-action@v4
+        commit_message: "VS Code Server ${{ steps.download.outputs.version }}"
+        tagging_message: "v${{ steps.download.outputs.version }}"
+      - uses: actions/upload-artifact@v3
+        with:
+          path: $GITHUB_WORKSPACE/bin
+      - if: steps.auto-commit-action.outputs.changes_detected == 'true'
+        uses: web3-storage/add-to-web3@v2
         id: web3
         with:
           web3_token: ${{ secrets.WEB3_STORAGE_TOKEN }}
-          path_to_add: './out'
+          path_to_add: '$GITHUB_WORKSPACE/bin'

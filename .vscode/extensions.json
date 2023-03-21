@@ -1,6 +1,7 @@
 {
     "recommendations": [
         "bbenoist.nix",
-        "redhat.vscode-yaml"
+        "redhat.vscode-yaml",
+        "github.vscode-github-actions"
     ]
 }
