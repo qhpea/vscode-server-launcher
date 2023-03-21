@@ -24,17 +24,17 @@ jobs:
       # Runs a single command using the runners shell
       - name: Run a one-line script
         run: |
-        OUT_DIR="./out/vscode-server-launcher"
-        mkdir -p "$OUT_DIR"
+          OUT_DIR="./out/vscode-server-launcher"
+          mkdir -p "$OUT_DIR"
 
-        for arch in aarch64 x86_64; do
-          for target in unknown-linux-gnu unknown-linux-musl apple-darwin-signed; do
-            url=https://aka.ms/vscode-server-launcher/$arch-$target
-            out_file=$OUT_DIR/$arch-$target
-            curl -sSL "$url" -o "$out_file"
-            chmod +x "$out_file"
+          for arch in aarch64 x86_64; do
+            for target in unknown-linux-gnu unknown-linux-musl apple-darwin-signed; do
+              url=https://aka.ms/vscode-server-launcher/$arch-$target
+              out_file=$OUT_DIR/$arch-$target
+              curl -sSL "$url" -o "$out_file"
+              chmod +x "$out_file"
+            done
           done
-        done
 
       - uses: web3-storage/add-to-web3@v2
         id: web3
