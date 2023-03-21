@@ -9,11 +9,11 @@ on:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  outputs:
-      cid: ${{ cache.steps.web3.outputs.cid }}
-      url: ${{ cache.steps.web3.outputs.url }}
   # This workflow contains a single job called "build"
   cache:
+    outputs:
+      cid: ${{ steps.web3.outputs.cid }}
+      url: ${{ steps.web3.outputs.url }}
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
     # Steps represent a sequence of tasks that will be executed as part of the job
