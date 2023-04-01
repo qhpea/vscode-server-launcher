@@ -27,8 +27,9 @@ jobs:
         shell: bash
       - id: auto-commit-action
         uses: stefanzweifel/git-auto-commit-action@v4
-        commit_message: "VS Code Server ${{ steps.download.outputs.version }}"
-        tagging_message: "v${{ steps.download.outputs.version }}"
+        with:
+          commit_message: "VS Code Server ${{ steps.download.outputs.version }}"
+          tagging_message: "v${{ steps.download.outputs.version }}"
       - uses: actions/upload-artifact@v3
         with:
           path: $GITHUB_WORKSPACE/bin
